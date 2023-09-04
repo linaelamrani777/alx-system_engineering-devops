@@ -1,4 +1,2 @@
 #!/bin/bash
-find . -type f -name "*.js" -exec rm -f {} \;
-
-echo "Deleted all .js files." 
+find  -type f . -name "*.js" -delete
