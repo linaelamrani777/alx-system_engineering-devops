@@ -1,0 +1,4 @@
+#!/bin/bash
+ls -la > ls_cwd_content
+
+echo "Content of ls_cwd_content has been updated."
