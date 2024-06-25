@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 # nginx likes port 80
 
-apt-get update -y 
-apt-get install -y nginx 
-sudo service nginx enable 
+cat /etc/nginx/sites-available/default > /etc/nginx/sites-enabled/default 
 sudo service nginx start
