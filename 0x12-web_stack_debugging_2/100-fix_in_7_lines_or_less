@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
-# Running nginx as nginx and fixing port from 80 to 8080
+
+# Stop Apache2 service
 pkill apache2
+
+# Change port from 80 to 8080 in nginx config
 sed -i 's/80/8080/g' /etc/nginx/sites-available/default
+
+# Change permissions of nginx.conf
 chmod 644 /etc/nginx/nginx.conf
+
+# Restart nginx service as nginx user
 sudo -u nginx service nginx restart
