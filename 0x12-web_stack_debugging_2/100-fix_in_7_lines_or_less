@@ -4,10 +4,13 @@
 pkill apache2
 
 # Change port from 80 to 8080 in nginx config
-sed -i 's/80/8080/g' /etc/nginx/sites-available/default
+sed -i 's/listen 80;/listen 8080;/g' /etc/nginx/sites-available/default
 
-# Change permissions of nginx.conf
-chmod 644 /etc/nginx/nginx.conf
+# Restart nginx service
+service nginx restart
 
-# Restart nginx service as nginx user
-sudo -u nginx service nginx restart
+# Check nginx process status
+ps aux | grep '[n]ginx'
+
+# Check nginx port 8080
+nc -z 0 8080 ; echo $?
