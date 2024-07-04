@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
-
-# Stop Apache2 service
+# Fixes server bug
+chmod 644 /etc/nginx/nginx.conf
+sed -Ei 's/\s*#?\s*user .*/user nginx;/' /etc/nginx/nginx.conf
+sed -Ei 's/(listen (\[::\]:)?80) /\180 /' /etc/nginx/sites-enabled/default
 pkill apache2
-
-# Change port from 80 to 8080 in nginx config
-sed -i 's/listen 80;/listen 8080;/g' /etc/nginx/sites-available/default
-
-# Restart nginx service
-service nginx restart
-
-# Check nginx process status
-ps aux | grep '[n]ginx'
-
-# Check nginx port 8080
-nc -z 0 8080 ; echo $?
+su nginx -s /bin/bash -c 'service nginx restart'
