@@ -1,4 +1,8 @@
-# 🚨 Postmortem: Nginx Configuration Glitch 🚨
+# 🚨 Postmortem: The Great Cache Conundrum  🚨
+
+## 📊 Flow Diagram
+
+![Flow Diagram](images/flow-diagram.png)
 
 ## Duration of the Outage
 
