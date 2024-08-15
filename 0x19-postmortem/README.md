@@ -1,68 +1,65 @@
-# 🚨 Postmortem: The Great Cache Conundrum  🚨
+# 🚨 Postmortem: Server Memory Meltdown 🚨
 
-## Duration of the Outage
+## 📅 Issue Summary
 
+**Duration of the Outage:**
 - **Start Time:** August 15, 2024, 14:55 PM Western European Time (WET)
-- **End Time:** August 15, 2024, 17:45 PM WET  
+- **End Time:** August 15, 2024, 17:45 PM WET
 
-## Impact
-
-- Picture an  e-commerce website that went dark, a major issue where customers couldn’t see the latest product updates or make purchases due to outdated content being served from the cache.
-
-
-## 🔍 The Case of the Stale Cache
-
-**The Issue:**
-- Customers were viewing old data, product information and prices because of a cache misconfiguration. Even though the website was operational, it displayed old data.
-
-## 🕒 The Investigation Timeline
-
-- **14:55 PM WET:** The first indication of the problem came from customer complaints about outdated product information.
-- **15:05 PM WET:** Monitoring tools confirmed that the site was live but serving stale content.
-- **15:20 PM WET:** Initial checks of server logs and cache settings did not reveal any obvious issues.
-- **15:45 PM WET:** A deeper investigation uncovered a misconfiguration in the cache server settings that was causing the outdated content.
-- **16:00 PM WET:** Updated the cache server configuration and cleared the old cache data to force a refresh.
-- **17:00 PM WET:** The cache was refreshed, and the website began displaying current product updates and prices.
-- **17:45 PM WET:** The issue was resolved, and normal operations were restored.
-
-
-## 🛠️ How We Resolved the Issue
+**Impact:**
+- Our application experienced severe performance degradation due to a memory overload issue. This led to slow response times and intermittent errors affecting roughly 70% of users. During the outage, users encountered delays in data processing and occasional service unavailability.
 
 **Root Cause:**
-- The misconfigured cache server was presenting outdated content because of wrong cache settings.
+- The root cause of the issue was a memory leak in one of our application services. The service was consuming more memory over time without releasing it, leading to a complete exhaustion of available server memory and significant performance issues.
+
+## 🕒 Timeline
+
+- **14:55 PM WET:** The issue was initially detected when users started reporting slow application performance and occasional errors.
+- **15:05 PM WET:** Monitoring systems alerted the team to high memory usage on the server. The incident was escalated to the DevOps team for further investigation.
+- **15:20 PM WET:** The team began investigating server metrics and logs. They noted excessive memory consumption but did not immediately pinpoint the cause.
+- **15:45 PM WET:** Deeper analysis revealed a memory leak in a background service that was not releasing memory properly.
+- **16:00 PM WET:** The memory leak was identified as the primary issue. The affected service was temporarily stopped to mitigate the impact.
+- **17:00 PM WET:** A patch was deployed to fix the memory leak issue. Memory usage normalized, and performance was restored.
+- **17:45 PM WET:** The issue was fully resolved, and normal operations resumed with improved memory monitoring.
+
+## 🛠️ Root Cause and Resolution
+
+**Root Cause:**
+- The memory leak in one of our application services was the primary cause of the issue. The service was gradually consuming more memory without releasing it, which eventually led to server instability.
 
 **Resolution:**
-- We corrected the cache server configuration and cleared the stale cache data to ensure that users received the most current information.
+- The problem was resolved by deploying a patch to fix the memory leak in the affected service. Additionally, the service was restarted to clear existing memory usage and restore normal operations.
 
-## 🚀 Preventing Future Cache Issues
+## 🚀 Corrective and Preventative Measures
 
 **Improvements:**
+- **Memory Leak Detection:** Implement tools for automated memory leak detection to identify and address such issues early.
+- **Enhanced Monitoring:** Improve monitoring systems to provide more granular insights into memory usage and potential leaks.
 
-- **Cache Management:** Implement automated cache clearing to prevent similar issues in the future.
-- **Enhanced Monitoring:** Set up monitoring to detect and alert on outdated content issues.
+**Task List:**
+1. **Implement Memory Leak Detection Tools:**
+   - Integrate memory profiling and leak detection tools into the development and staging environments.
+   - Regularly analyze application memory usage to catch leaks before they impact production.
 
-**Action Items:**
+2. **Upgrade Monitoring Systems:**
+   - Enhance monitoring dashboards to include detailed memory usage metrics.
+   - Set up alerts for abnormal memory consumption patterns to enable quicker responses.
 
-1. **Automated Cache Clearing Script:** Develop and deploy a script to regularly clear and refresh the cache.
-2. **Monitoring Alerts:** Introduce alerts to monitor cache performance and detect issues with stale content.
-
-**Example Script for Automated Cache Clearing:**
+**Example Script for Memory Monitoring:**
 
 ```bash
 #!/usr/bin/env bash
 
-# Define cache directory
-CACHE_DIR="/var/cache/myapp"
+# Define memory threshold (in MB)
+MEMORY_THRESHOLD=80
 
-# Clear the cache
-echo "Clearing cache at $CACHE_DIR..."
-rm -rf $CACHE_DIR/*
+# Check memory usage
+MEMORY_USAGE=$(free | grep Mem | awk '{print $3/$2 * 100.0}')
 
-# Restart the cache service
-echo "Restarting cache service..."
-sudo systemctl restart myapp-cache.service
+# Log memory usage
+echo "Current memory usage: $MEMORY_USAGE%" >> /var/log/memory-monitor.log
 
-# Log the action
-echo "Cache cleared and service restarted at $(date)" >> /var/log/cache-clear.log
-
-echo "Cache clearing process completed."
+# Trigger alert if memory usage exceeds threshold
+if (( $(echo "$MEMORY_USAGE > $MEMORY_THRESHOLD" | bc -l) )); then
+  echo "Warning: Memory usage exceeds $MEMORY_THRESHOLD%!" | mail -s "Memory Alert" admin@example.com
+fi
