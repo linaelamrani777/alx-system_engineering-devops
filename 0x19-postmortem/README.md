@@ -1,9 +1,5 @@
 # 🚨 Postmortem: The Great Cache Conundrum  🚨
 
-## 📊 Flow Diagram
-
-![Flow Diagram](images/flow-diagram.png)
-
 ## Duration of the Outage
 
 - **Start Time:** August 15, 2024, 14:55 PM Western European Time (WET)
