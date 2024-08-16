@@ -63,3 +63,7 @@ echo "Current memory usage: $MEMORY_USAGE%" >> /var/log/memory-monitor.log
 if (( $(echo "$MEMORY_USAGE > $MEMORY_THRESHOLD" | bc -l) )); then
   echo "Warning: Memory usage exceeds $MEMORY_THRESHOLD%!" | mail -s "Memory Alert" admin@example.com
 fi
+## 😂 Fun Diagram: The Memory Leak Monster
+
+![Memory Leak Monster]([https://via.placeholder.com/600x400?text=Memory+Leak+Monster](https://b.thumbs.redditmedia.com/20uUhntU1yhEnonC9ifnyEIGCu9ZnwfdqQGAv2RmryA.jpg))  
+*Caption: "The Memory Leak Monster, devouring server resources like a midnight snack!"*
